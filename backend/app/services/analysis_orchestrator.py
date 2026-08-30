@@ -17,6 +17,9 @@ from app.models import (
 from app.services.repo_service import RepoService
 from app.services.scanner_service import ScannerService
 from app.parsers.python_parser import PythonASTParser
+from app.parsers.treesitter_parser import TreeSitterParser
+from app.graph.graph_builder import GraphBuilder
+from app.graph.graph_analyzer import GraphAnalyzer
 
 
 class AnalysisOrchestrator:
@@ -24,6 +27,7 @@ class AnalysisOrchestrator:
         self.db_provided = db is not None
         self.db = db or SessionLocal()
         self.python_parser = PythonASTParser()
+        self.ts_parser = TreeSitterParser()
 
     def close(self):
         if not self.db_provided:
@@ -114,6 +118,8 @@ class AnalysisOrchestrator:
                     # Parse based on language
                     if s_file.language == "python":
                         parsed_res = self.python_parser.parse(s_file.path, content)
+                    elif s_file.language in ("javascript", "typescript"):
+                        parsed_res = self.ts_parser.parse(s_file.path, content)
                     else:
                         parsed_res = None
 
@@ -211,8 +217,16 @@ class AnalysisOrchestrator:
                     self._update_progress(run, "PARSING", pct, f"Parsed {parsed_count}/{len(supported_files)} code files...")
                     self.db.commit()
 
-            # 4. Finalizing statistics & records (80 -> 100%)
-            self._update_progress(run, "BUILDING_GRAPH", 85, "Aggregating repository statistics and symbol indexes...")
+            # 4. Construct Dependency & Call Graph (80 -> 95%)
+            self._update_progress(run, "BUILDING_GRAPH", 85, "Building NetworkX dependency and call graphs...")
+            graph_builder = GraphBuilder(self.db, repo)
+            nx_graph, det_edges, inf_edges = graph_builder.build_and_persist()
+
+            graph_analyzer = GraphAnalyzer(nx_graph)
+            cycles = graph_analyzer.find_circular_dependencies()
+
+            # 5. Finalizing statistics & records (95 -> 100%)
+            self._update_progress(run, "BUILDING_GRAPH", 95, f"Graph built: {det_edges} deterministic edges, {len(cycles)} cycles detected.")
             repo.total_files = len(scanned_files)
             repo.total_lines = total_lines_count
             repo.total_symbols = total_symbols_extracted

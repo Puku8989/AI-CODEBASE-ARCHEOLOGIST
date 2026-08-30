@@ -7,6 +7,7 @@ from app.parsers.base import (
     ParsedInheritance
 )
 from app.parsers.python_parser import PythonASTParser
+from app.parsers.treesitter_parser import TreeSitterParser
 
 __all__ = [
     "BaseParser",
@@ -15,5 +16,6 @@ __all__ = [
     "ParsedImport",
     "ParsedCall",
     "ParsedInheritance",
-    "PythonASTParser"
+    "PythonASTParser",
+    "TreeSitterParser"
 ]

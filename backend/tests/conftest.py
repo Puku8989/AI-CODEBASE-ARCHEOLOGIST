@@ -54,3 +54,8 @@ def client(db_session):
 @pytest.fixture
 def sample_repo_path():
     return Path(__file__).resolve().parent / "fixtures" / "sample_py_repo"
+
+
+@pytest.fixture
+def sample_js_repo_path():
+    return Path(__file__).resolve().parent / "fixtures" / "sample_js_repo"
