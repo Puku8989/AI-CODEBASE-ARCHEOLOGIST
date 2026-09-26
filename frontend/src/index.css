@@ -922,17 +922,180 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 24px;
+  padding: 8px 16px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.graph-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.graph-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.graph-toolbar-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.graph-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+}
+
+.graph-select {
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-family: var(--font-sans);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  outline: none;
+}
+.graph-select:hover { border-color: var(--accent-primary); }
+.graph-select:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 2px var(--accent-glow); }
+
+.active-toggle {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: var(--accent-secondary) !important;
+}
+
+.pill-icon {
+  font-size: 0.72rem;
+  line-height: 1;
 }
 
 .graph-container {
   flex: 1;
   position: relative;
   overflow: hidden;
+}
+
+.graph-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 23, 0.7);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Graph Search Bar ──────────────────────────────────────────── */
+.graph-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  position: relative;
+  animation: fadeIn 150ms ease-out;
+}
+
+.graph-search-input {
+  flex: 1;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.graph-search-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+.graph-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.graph-search-count {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.graph-search-results {
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  right: 16px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  animation: fadeIn 100ms ease-out;
+}
+
+.graph-search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  width: 100%;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+  font-family: var(--font-sans);
+}
+.graph-search-result-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.graph-search-result-item:last-child { border-bottom: none; }
+
+.search-result-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.search-result-path {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-left: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 /* ── React Flow Custom Styles ──────────────────────────────────── */
@@ -943,6 +1106,11 @@ body {
 
 .react-flow__edge-path {
   stroke-width: 1.5 !important;
+}
+
+.react-flow__edge-text {
+  font-size: 0.58rem !important;
+  fill: var(--text-muted) !important;
 }
 
 .react-flow__minimap {
@@ -974,33 +1142,240 @@ body {
 
 /* ── Custom React Flow Node ────────────────────────────────────── */
 .rf-custom-node {
-  padding: 8px 14px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
   background: var(--bg-elevated);
   border: 1.5px solid var(--border-color);
   font-size: 0.74rem;
-  min-width: 120px;
-  max-width: 220px;
+  min-width: 140px;
+  max-width: 260px;
   transition: all var(--transition-fast);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .rf-custom-node:hover {
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-glow);
   z-index: 10;
+  transform: translateY(-1px);
 }
 
 .rf-custom-node.selected {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  box-shadow: 0 0 0 2px var(--accent-glow), var(--shadow-md);
 }
 
+/* Upstream dependency: what the selected node depends on (Cyan) */
+.rf-custom-node.upstream-dep {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.45) !important;
+}
+
+/* Downstream dependent: what depends on the selected node (Amber) */
+.rf-custom-node.downstream-dependent {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.45) !important;
+}
+
+/* Entry point node — distinguished visual */
+.rf-custom-node.entry-point {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, rgba(245, 158, 11, 0.08) 100%);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+}
+
+/* High-importance node */
+.rf-custom-node.high-importance {
+  border-width: 2px;
+}
+
+/* Isolated node */
+.rf-custom-node.isolated {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+/* Type-specific left border accent */
+.rf-custom-node.type-file { border-left: 3px solid var(--node-file); }
+.rf-custom-node.type-module { border-left: 3px solid var(--node-file); }
+.rf-custom-node.type-class { border-left: 3px solid var(--node-class); }
+.rf-custom-node.type-function { border-left: 3px solid var(--node-function); }
+.rf-custom-node.type-method { border-left: 3px solid var(--node-method); }
+.rf-custom-node.type-api_route { border-left: 3px solid var(--node-api-route); }
+.rf-custom-node.type-model { border-left: 3px solid var(--node-model); }
+.rf-custom-node.type-variable { border-left: 3px solid var(--node-variable); }
+
+/* ── Handles ───────────────────────────────────────────────────── */
+.rf-handle {
+  width: 8px !important;
+  height: 8px !important;
+  border: 1.5px solid var(--bg-primary) !important;
+  border-radius: 50% !important;
+  transition: all var(--transition-fast);
+}
+.rf-handle-target { background: var(--accent-primary) !important; }
+.rf-handle-source { background: var(--accent-secondary) !important; }
+.rf-custom-node:hover .rf-handle {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+/* Top-Bottom orientation handle adjustments */
+.rf-handle.handle-tb.rf-handle-target {
+  top: -4px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+.rf-handle.handle-tb.rf-handle-source {
+  bottom: -4px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* ── Multi-port terminal dots ──────────────────────────────────── */
+.rf-port-terminal {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--bg-primary, #0b0f19);
+  transition: all 0.15s ease;
+}
+.rf-port-terminal.target {
+  background: #38bdf8;
+  box-shadow: 0 0 3px rgba(56, 189, 248, 0.5);
+}
+.rf-port-terminal.source {
+  background: #a78bfa;
+  box-shadow: 0 0 3px rgba(167, 139, 250, 0.5);
+}
+
+/* ── Edge interaction & contrast halo ──────────────────────────── */
+.react-flow__edge-interaction {
+  cursor: pointer;
+}
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 2.8px !important;
+  filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.8)) !important;
+  cursor: pointer;
+}
+.react-flow__edge:hover .rf-edge-halo {
+  stroke-width: 6px !important;
+  opacity: 1 !important;
+}
+
+/* ── Edge label badges ─────────────────────────────────────────── */
+.rf-edge-label-badge {
+  font-size: 0.56rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.82);
+  color: rgba(200, 210, 230, 0.85);
+  border: 1px solid rgba(99, 130, 200, 0.18);
+  white-space: nowrap;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+  transition: all 0.15s ease;
+  cursor: default;
+  user-select: none;
+}
+.rf-edge-label-badge:hover {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(99, 130, 200, 0.35);
+  color: rgba(220, 228, 240, 0.95);
+}
+.rf-edge-label-badge.selected {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+  box-shadow: 0 0 6px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Edge interaction & rendering ──────────────────────────────── */
+.react-flow__edge-interaction {
+  cursor: pointer;
+}
+.react-flow__edge {
+  pointer-events: visibleStroke;
+}
+.react-flow__edge.selected path.react-flow__edge-path {
+  filter: drop-shadow(0 0 3px rgba(99, 102, 241, 0.5));
+}
+.react-flow__edge:hover path.react-flow__edge-path {
+  filter: drop-shadow(0 0 2px rgba(148, 163, 184, 0.4));
+}
+
+/* ── Node Header ───────────────────────────────────────────────── */
 .rf-node-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
+}
+
+.rf-node-type-badge {
+  font-size: 0.56rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rf-node-type-badge.file { background: rgba(59, 130, 246, 0.15); color: var(--node-file); }
+.rf-node-type-badge.module { background: rgba(59, 130, 246, 0.15); color: var(--node-file); }
+.rf-node-type-badge.class { background: rgba(168, 85, 247, 0.15); color: var(--node-class); }
+.rf-node-type-badge.model { background: rgba(236, 72, 153, 0.15); color: var(--node-model); }
+.rf-node-type-badge.function { background: rgba(34, 197, 94, 0.15); color: var(--node-function); }
+.rf-node-type-badge.method { background: rgba(20, 184, 166, 0.15); color: var(--node-method); }
+.rf-node-type-badge.api_route { background: rgba(245, 158, 11, 0.15); color: var(--node-api-route); }
+.rf-node-type-badge.variable { background: rgba(100, 116, 139, 0.15); color: var(--node-variable); }
+
+.rf-entry-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  margin-left: auto;
+}
+
+.rf-dep-badge {
+  font-size: 0.54rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+  margin-left: auto;
+}
+.rf-dep-badge.upstream {
+  background: rgba(6, 182, 212, 0.2);
+  color: #06b6d4;
+  border: 1px solid rgba(6, 182, 212, 0.45);
+}
+.rf-dep-badge.downstream {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+/* ── Node Label Row ────────────────────────────────────────────── */
+.rf-node-label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .rf-node-type-dot {
@@ -1026,15 +1401,227 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
 }
 
 .rf-node-sub {
-  font-size: 0.64rem;
+  font-size: 0.62rem;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* ── Node Badges ───────────────────────────────────────────────── */
+.rf-node-badges {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.rf-badge {
+  font-size: 0.58rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.rf-badge.info { background: rgba(99, 102, 241, 0.15); color: var(--accent-secondary); }
+.rf-badge.danger { background: rgba(239, 68, 68, 0.2); color: var(--color-error); }
+.rf-badge.warning { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); }
+.rf-badge.muted { background: rgba(100, 116, 139, 0.15); color: var(--text-muted); }
+
+/* ── Group Node ────────────────────────────────────────────────── */
+.rf-group-node {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  pointer-events: none;
+}
+
+.rf-group-label {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+/* ── Edge Detail Card ──────────────────────────────────────────── */
+.edge-detail-card {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 310px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: 14px;
+  z-index: 50;
+  animation: fadeIn 150ms ease-out;
+}
+
+.edge-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.edge-detail-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.edge-endpoints-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.edge-endpoint-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  max-width: 105px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edge-endpoint-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.edge-rel-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.edge-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.edge-meta-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.edge-meta-val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── Graph Legend Overlay ──────────────────────────────────────── */
+.graph-legend-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: 14px 18px;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn 150ms ease-out;
+  max-width: 320px;
+}
+
+.legend-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.legend-title {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+}
+
+.legend-line {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-entry-symbol {
+  color: var(--color-warning);
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.legend-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
 }
 
 /* ── Node Detail Panel ─────────────────────────────────────────── */
@@ -1042,7 +1629,7 @@ body {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 320px;
+  width: 340px;
   max-height: calc(100% - 20px);
   overflow-y: auto;
   background: var(--glass-bg);
@@ -1093,10 +1680,24 @@ body {
   color: var(--text-secondary);
   border-radius: var(--radius-sm);
   transition: background var(--transition-fast);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-sans);
 }
 
 .node-detail-item:hover {
   background: var(--bg-hover);
+}
+
+.node-detail-item.clickable {
+  cursor: pointer;
+}
+
+.node-detail-item.clickable:hover {
+  background: var(--bg-hover);
+  color: var(--accent-secondary);
 }
 
 /* ── Modal ─────────────────────────────────────────────────────── */

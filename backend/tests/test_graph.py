@@ -94,3 +94,39 @@ def test_graph_construction_and_cycles_typescript(client: TestClient, sample_js_
             found_ts_cycle = True
             break
     assert found_ts_cycle is True
+
+
+def test_graph_analyzer_enhancements(client: TestClient, sample_repo_path, db_session):
+    resp = client.post("/api/repositories", json={
+        "name": "Enhancements Test Repo",
+        "local_path": str(sample_repo_path)
+    })
+    assert resp.status_code == 201
+    repo_id = resp.json()["id"]
+
+    orchestrator = AnalysisOrchestrator(db=db_session)
+    orchestrator.run_analysis(repo_id)
+
+    # Test Architecture View with enhanced fields
+    graph_resp = client.get(f"/api/repositories/{repo_id}/graph?view_mode=architecture")
+    assert graph_resp.status_code == 200
+    data = graph_resp.json()
+
+    assert "entryPoints" in data
+    assert isinstance(data["entryPoints"], list)
+    assert "directoryGroups" in data
+    assert isinstance(data["directoryGroups"], dict)
+
+    # Check node enrichment
+    for node in data["nodes"]:
+        ndata = node["data"]
+        assert "importance" in ndata
+        assert "directory" in ndata
+
+    # Check edge enrichment and color mapping
+    for edge in data["edges"]:
+        edata = edge["data"]
+        assert "relationshipType" in edata
+        assert "confidence" in edata
+        assert "markerEnd" not in edge or edge["markerEnd"] is not None
+

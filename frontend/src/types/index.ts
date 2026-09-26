@@ -113,6 +113,14 @@ export interface GraphNodeData {
   complexity?: number | null;
   is_async?: boolean;
   analysis_status?: string;
+  importance?: number;
+  directory?: string;
+  isEntryPoint?: boolean;
+  isIsolated?: boolean;
+  isGroup?: boolean;
+  layoutDirection?: 'LR' | 'TB';
+  isUpstream?: boolean;
+  isDownstream?: boolean;
   [key: string]: unknown;
 }
 
@@ -126,6 +134,10 @@ export interface GraphNode {
 export interface GraphEdgeData {
   relationshipType: string;
   confidence: string;
+  line_number?: number;
+  source_module?: string;
+  imported_name?: string;
+  callee_name?: string;
   [key: string]: unknown;
 }
 
@@ -135,6 +147,7 @@ export interface GraphEdge {
   target: string;
   label: string;
   animated: boolean;
+  type?: string;
   style: Record<string, string>;
   data: GraphEdgeData;
 }
@@ -148,6 +161,8 @@ export interface GraphPayload {
     circularDependencyCount: number;
     viewMode: string;
   };
+  entryPoints?: string[];
+  directoryGroups?: Record<string, string[]>;
 }
 
 export interface CouplingMetric {
