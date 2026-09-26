@@ -67,3 +67,11 @@ def test_invalid_repo_url_rejected(client: TestClient):
     })
     assert resp.status_code == 400
     assert "Invalid repository URL" in resp.json()["detail"]
+
+
+def test_web_console_served_at_root(client: TestClient):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert "AI Codebase Archaeologist" in resp.text
+    assert "Ingest Codebase" in resp.text
+
